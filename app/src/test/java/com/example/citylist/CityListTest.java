@@ -18,13 +18,44 @@ public class CityListTest {
     @Test
     public void testAdd() {
         CityList cityList = mockCityList();
-        assertEquals(1, cityList.getCities().size());
+        assertEquals(1, cityList.getCities(1).size());
 
         City city = new City("Regina", "SK");
         cityList.add(city);
 
-        assertEquals(2, cityList.getCities().size());
-        assertTrue(cityList.getCities().contains(city));
+        assertEquals(2, cityList.getCities(1).size());
+        assertTrue(cityList.getCities(1).contains(city));
+    }
+
+    /**
+     * tests if delete method works
+     */
+    @Test
+    public void testDelete()
+    {
+        CityList cityList = new CityList();
+        City city1 = new City("Bogura", "Rajshahi");
+
+        cityList.add(city1);
+        cityList.delete(city1);
+        assertTrue(!cityList.getCities(1).contains(city1));
+
+    }
+
+    /**
+     * tests if count method works
+     */
+    @Test
+    public void testCount()
+    {
+        CityList cityList = new CityList();
+        City city1 = new City("Bogura", "Rajshahi");
+
+        cityList.add(city1);
+        assertEquals(1,cityList.count());
+        cityList.delete(city1);
+        assertEquals(0,cityList.count());
+
     }
 
     @Test
@@ -38,15 +69,55 @@ public class CityListTest {
         });
     }
 
+    /**
+     * tests if delete method throws exception correctly
+     */
+    @Test
+    public void testDeleteException()
+    {
+        CityList cityList = new CityList();
+        City city1 = new City("Bogura", "Rajshahi");
+
+        cityList.add(city1);
+        cityList.delete(city1);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            cityList.delete(city1);
+        });
+
+    }
+
     @Test
     public void testGetCities() {
         CityList cityList = mockCityList();
-        assertEquals(0, mockCity().compareTo(cityList.getCities().get(0)));
+        assertEquals(0, mockCity().compareTo(cityList.getCities(1).get(0)));
 
         City city = new City("Charlottetown", "Prince Edward Island");
         cityList.add(city);
 
-        assertEquals(0, city.compareTo(cityList.getCities().get(0)));
-        assertEquals(0, mockCity().compareTo(cityList.getCities().get(1)));
+        assertEquals(0, city.compareTo(cityList.getCities(1).get(0)));
+        assertEquals(0, mockCity().compareTo(cityList.getCities(1).get(1)));
+    }
+    /**
+     * tests if getcities method sorts correctly
+     * 
+     */
+    @Test
+    public void testSort()
+    {
+        CityList cityList = new CityList();
+        City city1 = new City("Charlottetown", "Prince Edward Island");
+        cityList.add(city1);
+        City city2 = new City("Satmatha", "Bogura");
+        cityList.add(city2);
+
+        //by city
+        assertEquals(0,city1.compareTo(cityList.getCities(1).get(0)));
+        assertEquals(0,city2.compareTo(cityList.getCities(1).get(1)));
+
+        //by province
+        assertEquals(0,city2.compareTo(cityList.getCities(-1).get(0)));
+        assertEquals(0,city1.compareTo(cityList.getCities(-1).get(1)));
+
     }
 }
